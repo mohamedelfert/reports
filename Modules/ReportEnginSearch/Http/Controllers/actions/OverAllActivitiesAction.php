@@ -2,33 +2,38 @@
 
 namespace Modules\ReportEnginSearch\Http\Controllers\actions;
 
-use Exception;
-use GuzzleHttp\Client;
-
 class OverAllActivitiesAction
 {
-    public function execute($data)
+    public function __construct(CallPythonUrlAction $callPythonUrlAction)
     {
-        // Create a Guzzle client
-        $client = new Client();
+        $this->callPythonUrlAction = $callPythonUrlAction;
+    }
 
-        // Send POST request to the Flask API
-        try {
-            $overall_report = $client->post('http://127.0.0.1:4000/reports/overall-activities', $data);
+    public function execute($request)
+    {
+        $authorizationToken = $request->bearerToken();
 
-            // Check for a successful status code (HTTP 200)
-            if ($overall_report != null) {
-                if ($overall_report->getStatusCode() === 200) {
-                    // Return the records received from the Flask API as a JSON response
-                    return json_decode($overall_report->getBody(), true);
-                }
-            }
+        // Prepare request data for the Flask API
+        $data = [
+            'json' => [
+                'slug' => $request->input('slug'),
+                'type' => $request->input('type'),
+                'subdomain_id' => $request->input('subdomain_id'),
+                'charts' => $request->input('charts'),
+                'users_ids' => $request->input('users_ids') ?? null,
+                'groups_ids' => $request->input('groups_ids') ?? null,
+                'start_date' => $request->input('start_date'),
+                'end_date' => $request->input('end_date'),
+            ],
+            'headers' => [
+                'Authorization' => 'Bearer ' . $authorizationToken
+            ]
+        ];
 
-            // Return an error response if the request was not successful
-            return response()->json(['error' => 'Failed to fetch reports from the Flask API'], 500);
-        } catch (Exception $e) {
-            // Handle exceptions (e.g., connection issues, server errors)
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
+        $path = $request->input('slug');
+
+        $data = $this->callPythonUrlAction->execute($data, $path);
+
+        return json_decode($data, true);
     }
 }

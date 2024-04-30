@@ -13,15 +13,9 @@ use Yajra\DataTables\Facades\DataTables;
 
 class ReportEnginSearchController extends Controller
 {
-    /**
-     * Constructor function
-     * @param OverAllActivitiesAction $overAllActivitiesAction
-     * @param AgentsReportAction $agentsReportAction
-     */
     public function __construct(
         OverAllActivitiesAction $overAllActivitiesAction,
         AgentsReportAction      $agentsReportAction
-
     )
     {
         $this->overAllActivitiesAction = $overAllActivitiesAction;
@@ -63,47 +57,12 @@ class ReportEnginSearchController extends Controller
 
     public function reports(ReportRequest $request)
     {
-        $authorizationToken = $request->bearerToken();
-
-        if ($request->input('slug') && $request->input('slug') === 'agents-report') {
-            $page_length = $request->input('page_length', 10);
-            $current_page = $request->input('current_page', 1);
-            $skip = $page_length * ($current_page - 1);
-            $users = User::skip($skip)->take($page_length)->get();
-
-            /// Get user IDs without keys and filter out null or empty values
-            $users_ids = $users->pluck('id')->toArray();
-            $groups_ids = $users->pluck('group_id')->toArray();
-        } else {
-            $users_ids = $request->input('users_ids');
-            $groups_ids = $request->input('groups_ids');
-        }
-
-        // Prepare request data for the Flask API
-        $data = [
-            'json' => [
-                'slug' => $request->input('slug'),
-                'type' => $request->input('type'),
-                "page_length" => $request->input('page_length'),
-                "current_page" => $request->input('current_page'),
-                'subdomain_id' => $request->input('subdomain_id'),
-                'charts' => $request->input('charts'),
-                'users_ids' => $users_ids ?? null,
-                'groups_ids' => $groups_ids ?? null,
-                'start_date' => $request->input('start_date'),
-                'end_date' => $request->input('end_date'),
-            ],
-            'headers' => [
-                'Authorization' => 'Bearer ' . $authorizationToken
-            ]
-        ];
-
         switch ($request->input('slug')) {
             case('overall-activities'):
-                $response = $this->overAllActivitiesAction->execute($data);
+                $response = $this->overAllActivitiesAction->execute($request);
                 break;
             case('agents-report'):
-                $response = $this->agentsReportAction->execute($data);
+                $response = $this->agentsReportAction->execute($request);
                 break;
             default:
                 $response = null;

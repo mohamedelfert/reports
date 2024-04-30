@@ -9,15 +9,47 @@ use Yajra\DataTables\Facades\DataTables;
 
 class AgentsReportAction
 {
-    public function execute($data)
+    public function __construct(CallPythonUrlAction $callPythonUrlAction)
     {
+        $this->callPythonUrlAction = $callPythonUrlAction;
+    }
+
+    public function execute($request)
+    {
+        $length = $data['length'] ?? 10;
+        $page = $data['page'] ?? 1;
+        $skip = $length * ($page - 1);
+        $users = User::skip($skip)->take($length)->get();
+
+        $authorizationToken = $request->bearerToken();
+
+        // Prepare request data for the Flask API
+        $data = [
+            'json' => [
+                'slug' => $request->input('slug'),
+                'type' => $request->input('type'),
+                'subdomain_id' => $request->input('subdomain_id'),
+                'charts' => $request->input('charts'),
+                'users_ids' => $request->input('users_ids') ?? null,
+                'groups_ids' => $request->input('groups_ids') ?? null,
+                'start_date' => $request->input('start_date'),
+                'end_date' => $request->input('end_date'),
+            ],
+            'headers' => [
+                'Authorization' => 'Bearer ' . $authorizationToken
+            ]
+        ];
+
+        $path = $request->input('slug');
+
+        $data = $this->callPythonUrlAction->execute($data, $path);
+
+        return json_decode($data, true);
+
         // Create a Guzzle client
         $client = new Client();
 
-        $page_length = $data['page_length'] ?? 10;
-        $current_page = $data['current_page'] ?? 1;
-        $skip = $page_length * ($current_page - 1);
-        $users = User::skip($skip)->take($page_length)->get();
+
 
         try {
             // Send POST request to the Flask API
