@@ -32,8 +32,8 @@ class OverAllActivitiesAction
 
         $path = $request->input('slug');
 
-        $data = $this->callPythonUrlAction->execute($data, $path);
+        $overall_reports = $this->callPythonUrlAction->execute($data, $path);
 
-        return json_decode($data, true);
+        return json_decode($overall_reports, true);
     }
 }

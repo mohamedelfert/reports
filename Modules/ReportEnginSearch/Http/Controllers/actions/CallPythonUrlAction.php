@@ -14,12 +14,12 @@ class CallPythonUrlAction
 
         // Send POST request to the Flask API
         try {
-            $overall_report = $client->post(env('BASE_URL') . $path, $data);
+            $reports = $client->post(env('BASE_URL') . $path, $data);
 
             // Check for a successful status code (HTTP 200)
-            if ($overall_report->getStatusCode() === 200) {
+            if ($reports->getStatusCode() === 200) {
                 // Return the records received from the Flask API as a JSON response
-                return $overall_report->getBody();
+                return $reports->getBody();
             }
 
             return null;
