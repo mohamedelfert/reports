@@ -1,0 +1,13 @@
+{
+    "name": "ReportEnginSearch",
+    "alias": "reportenginsearch",
+    "description": "",
+    "keywords": [],
+    "order": 0,
+    "providers": [
+        "Modules\\ReportEnginSearch\\Providers\\ReportEnginSearchServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}
