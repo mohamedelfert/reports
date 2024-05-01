@@ -7,10 +7,14 @@ use GuzzleHttp\Client;
 
 class CallPythonUrlAction
 {
-    public function execute($data, $path)
+    public function execute($path, $data)
     {
         // Create a Guzzle client
         $client = new Client();
+
+        $data['headers'] = [
+            'Authorization' => 'Bearer ' . env('AUTHORIZATION_TOKEN')
+        ];
 
         // Send POST request to the Flask API
         try {

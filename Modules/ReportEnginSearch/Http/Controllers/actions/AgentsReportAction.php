@@ -20,46 +20,38 @@ class AgentsReportAction
         $skip = $length * ($page - 1);
         $users = User::skip($skip)->take($length)->get();
 
-        $authorizationToken = $request->bearerToken();
-
         // Prepare request data for the Flask API
         $data = [
             'json' => [
                 'slug' => $request->input('slug'),
                 'type' => $request->input('type'),
                 'subdomain_id' => $request->input('subdomain_id'),
-                'charts' => $request->input('charts'),
                 'users_ids' => $request->input('users_ids') ?? null,
                 'groups_ids' => $request->input('groups_ids') ?? null,
                 'start_date' => $request->input('start_date'),
                 'end_date' => $request->input('end_date'),
-            ],
-            'headers' => [
-                'Authorization' => 'Bearer ' . $authorizationToken
             ]
         ];
 
         $path = $request->input('slug');
 
         try {
-            $agents_report = json_decode($this->callPythonUrlAction->execute($data, $path), true);
+            $agents_report = collect(json_decode($this->callPythonUrlAction->execute($path, $data), true));
 
-            foreach ($agents_report as $userId => $reportData) {
-                // Check if the userId matches the user's id
-                foreach ($users as $user) {
-                    if ($userId === $user->id) {
-                        // Match found, add report data to the user
-                        $user->report = $reportData;
-                        break;
-                    }
-                }
-            }
+//            dd($agents_report);
+
+            // get user ids from the report
+            $user_ids = $agents_report->keys();
+
+//            dd($user_ids);
+
+            // filter users with report data
+            $filtered_users = $users->whereIn('id', $user_ids);
 
             // Return the users with report data
-            $data = Datatables::of($users)
-                ->addColumn('report', function ($user) {
-                    // Return the report data for the user
-                    return $user->report;
+            $data = Datatables::of($filtered_users)
+                ->addColumn('report', function ($user) use ($agents_report) {
+                    return $agents_report[$user->id];
                 })
                 ->make(true);
 

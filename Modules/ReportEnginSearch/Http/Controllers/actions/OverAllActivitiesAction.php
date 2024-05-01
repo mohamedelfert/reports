@@ -11,8 +11,6 @@ class OverAllActivitiesAction
 
     public function execute($request)
     {
-        $authorizationToken = $request->bearerToken();
-
         // Prepare request data for the Flask API
         $data = [
             'json' => [
@@ -24,15 +22,12 @@ class OverAllActivitiesAction
                 'groups_ids' => $request->input('groups_ids') ?? null,
                 'start_date' => $request->input('start_date'),
                 'end_date' => $request->input('end_date'),
-            ],
-            'headers' => [
-                'Authorization' => 'Bearer ' . $authorizationToken
             ]
         ];
 
         $path = $request->input('slug');
 
-        $overall_reports = $this->callPythonUrlAction->execute($data, $path);
+        $overall_reports = $this->callPythonUrlAction->execute($path, $data);
 
         return json_decode($overall_reports, true);
     }
