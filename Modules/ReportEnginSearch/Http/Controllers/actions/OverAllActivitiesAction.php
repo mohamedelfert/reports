@@ -2,6 +2,8 @@
 
 namespace Modules\ReportEnginSearch\Http\Controllers\actions;
 
+use Exception;
+
 class OverAllActivitiesAction
 {
     public function __construct(CallPythonUrlAction $callPythonUrlAction)
@@ -27,8 +29,19 @@ class OverAllActivitiesAction
 
         $path = $request->input('slug');
 
-        $overall_reports = $this->callPythonUrlAction->execute($path, $data);
+        try {
+            $overall_reports = collect(json_decode($this->callPythonUrlAction->execute($path, $data), true));
 
-        return json_decode($overall_reports, true);
+            //    dd($overall_reports);
+
+            return response()->json([
+                "data" => $overall_reports,
+                "message" => "Retrieved all reports successfully.",
+                "status" => 200
+            ]);
+        } catch (Exception $e) {
+            // Handle exceptions, connection issues, server errors
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 }
