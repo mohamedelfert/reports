@@ -2,9 +2,7 @@
 
 namespace Modules\ReportEnginSearch\Http\Controllers\actions;
 
-use App\User;
 use Exception;
-use Yajra\DataTables\Facades\DataTables;
 
 class PerformanceReportAction
 {
@@ -31,7 +29,7 @@ class PerformanceReportAction
         try {
             $performance_report = collect(json_decode($this->callPythonUrlAction->execute($path, $data), true));
 
-        //    dd($performance_report);
+            //    dd($performance_report);
 
             return response()->json([
                 "data" => $performance_report,

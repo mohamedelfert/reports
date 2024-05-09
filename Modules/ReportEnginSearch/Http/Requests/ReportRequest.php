@@ -50,3 +50,4 @@ class ReportRequest extends FormRequest
         return true;
     }
 }
+
