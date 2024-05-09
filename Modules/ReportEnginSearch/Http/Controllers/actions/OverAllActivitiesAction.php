@@ -32,8 +32,6 @@ class OverAllActivitiesAction
         try {
             $overall_reports = collect(json_decode($this->callPythonUrlAction->execute($path, $data), true));
 
-            //    dd($overall_reports);
-
             return response()->json([
                 "data" => $overall_reports,
                 "message" => "Retrieved all reports successfully.",
