@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\ReportEnginSearch\Http\Controllers\actions\AgentsReportAction;
+use Modules\ReportEnginSearch\Http\Controllers\actions\MeetingsOverallReportAction;
 use Modules\ReportEnginSearch\Http\Controllers\actions\OverAllActivitiesAction;
 use Modules\ReportEnginSearch\Http\Controllers\actions\PerformanceReportAction;
 use Modules\ReportEnginSearch\Http\Requests\ReportRequest;
@@ -15,14 +16,16 @@ use Yajra\DataTables\Facades\DataTables;
 class ReportEnginSearchController extends Controller
 {
     public function __construct(
-        OverAllActivitiesAction $overAllActivitiesAction,
-        AgentsReportAction      $agentsReportAction,
-        PerformanceReportAction $performanceReportAction
+        OverAllActivitiesAction     $overAllActivitiesAction,
+        AgentsReportAction          $agentsReportAction,
+        PerformanceReportAction     $performanceReportAction,
+        MeetingsOverallReportAction $meetingsOverallReportAction
     )
     {
         $this->overAllActivitiesAction = $overAllActivitiesAction;
         $this->agentsReportAction = $agentsReportAction;
         $this->performanceReportAction = $performanceReportAction;
+        $this->meetingsOverallReportAction = $meetingsOverallReportAction;
     }
 
 
@@ -69,6 +72,9 @@ class ReportEnginSearchController extends Controller
                 break;
             case('performance-report'):
                 $response = $this->performanceReportAction->execute($request);
+                break;
+            case('meetings-overall'):
+                $response = $this->meetingsOverallReportAction->execute($request);
                 break;
             default:
                 $response = null;

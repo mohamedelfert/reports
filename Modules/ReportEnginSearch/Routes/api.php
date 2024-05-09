@@ -14,4 +14,4 @@
 use Illuminate\Support\Facades\Route;
 use Modules\ReportEnginSearch\Http\Controllers\ReportEnginSearchController;
 
-Route::post('/reports/get-charts', [ReportEnginSearchController::class, 'reports']);
+Route::post('/reports/get-reports', [ReportEnginSearchController::class, 'reports']);
