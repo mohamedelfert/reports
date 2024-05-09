@@ -19,12 +19,21 @@ class ReportRequest extends FormRequest
             $charts = 'nullable|array';
         }
 
+        if (request()->input('slug') && request()->input('slug') === 'performance-report') {
+            $user_id = 'required';
+            $type = 'nullable';
+        } else {
+            $user_id = 'nullable';
+            $type = 'required|string';
+        }
+
         return [
             'slug' => 'required',
-            'type' => 'required|string',
+            'type' => $type,
             'subdomain_id' => 'required|integer',
             'charts' => $charts,
             'users_ids' => 'nullable|array',
+            'user_id' => $user_id,
             'groups_ids' => 'nullable|array',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date'
