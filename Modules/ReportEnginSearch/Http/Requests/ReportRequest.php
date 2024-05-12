@@ -22,7 +22,13 @@ class ReportRequest extends FormRequest
         if (request()->input('slug') && request()->input('slug') === 'performance-report') {
             $user_id = 'required';
             $type = 'nullable';
-        } else {
+        } elseif (request()->input('slug') && request()->input('slug') === 'by-agent-report') {
+            $user_id = 'nullable';
+            $type = 'nullable';
+        } elseif (request()->input('slug') && request()->input('slug') === 'by-team-report') {
+            $user_id = 'nullable';
+            $type = 'nullable';
+        }else {
             $user_id = 'nullable';
             $type = 'required|string';
         }

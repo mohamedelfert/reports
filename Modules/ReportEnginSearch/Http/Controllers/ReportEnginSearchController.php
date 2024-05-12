@@ -4,20 +4,26 @@ namespace Modules\ReportEnginSearch\Http\Controllers;
 
 use Illuminate\Routing\Controller;
 use Modules\ReportEnginSearch\Http\Controllers\actions\AgentsReportAction;
+use Modules\ReportEnginSearch\Http\Controllers\actions\MeetingsByAgentReportAction;
+use Modules\ReportEnginSearch\Http\Controllers\actions\MeetingsByTeamReportAction;
 use Modules\ReportEnginSearch\Http\Controllers\actions\MeetingsOverallReportAction;
 use Modules\ReportEnginSearch\Http\Controllers\actions\MeetingsReportAction;
 use Modules\ReportEnginSearch\Http\Controllers\actions\OverAllActivitiesAction;
 use Modules\ReportEnginSearch\Http\Controllers\actions\PerformanceReportAction;
+use Modules\ReportEnginSearch\Http\Controllers\actions\ScheduledMeetingsReportAction;
 use Modules\ReportEnginSearch\Http\Requests\ReportRequest;
 
 class ReportEnginSearchController extends Controller
 {
     public function __construct(
-        OverAllActivitiesAction     $overAllActivitiesAction,
-        AgentsReportAction          $agentsReportAction,
-        PerformanceReportAction     $performanceReportAction,
-        MeetingsOverallReportAction $meetingsOverallReportAction,
-        MeetingsReportAction        $meetingsReportAction
+        OverAllActivitiesAction       $overAllActivitiesAction,
+        AgentsReportAction            $agentsReportAction,
+        PerformanceReportAction       $performanceReportAction,
+        MeetingsOverallReportAction   $meetingsOverallReportAction,
+        MeetingsReportAction          $meetingsReportAction,
+        ScheduledMeetingsReportAction $scheduledMeetingsReportAction,
+        MeetingsByAgentReportAction $meetingsByAgentReportAction,
+        MeetingsByTeamReportAction $meetingsByTeamReportAction
     )
     {
         $this->overAllActivitiesAction = $overAllActivitiesAction;
@@ -25,6 +31,9 @@ class ReportEnginSearchController extends Controller
         $this->performanceReportAction = $performanceReportAction;
         $this->meetingsOverallReportAction = $meetingsOverallReportAction;
         $this->meetingsReportAction = $meetingsReportAction;
+        $this->scheduledMeetingsReportAction = $scheduledMeetingsReportAction;
+        $this->meetingsByAgentReportAction = $meetingsByAgentReportAction;
+        $this->meetingsByTeamReportAction = $meetingsByTeamReportAction;
     }
 
 
@@ -77,6 +86,15 @@ class ReportEnginSearchController extends Controller
                 break;
             case('meetings'):
                 $response = $this->meetingsReportAction->execute($request);
+                break;
+            case('scheduled-meetings'):
+                $response = $this->scheduledMeetingsReportAction->execute($request);
+                break;
+            case('by-agent-report'):
+                $response = $this->meetingsByAgentReportAction->execute($request);
+                break;
+            case('by-team-report'):
+                $response = $this->meetingsByTeamReportAction->execute($request);
                 break;
             default:
                 $response = null;
