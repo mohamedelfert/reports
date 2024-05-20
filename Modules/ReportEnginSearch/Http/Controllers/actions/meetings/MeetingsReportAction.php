@@ -1,10 +1,11 @@
 <?php
 
-namespace Modules\ReportEnginSearch\Http\Controllers\actions;
+namespace Modules\ReportEnginSearch\Http\Controllers\actions\meetings;
 
 use Exception;
+use Modules\ReportEnginSearch\Http\Controllers\actions\CallPythonUrlAction;
 
-class MeetingsByAgentReportAction
+class MeetingsReportAction
 {
     public function __construct(CallPythonUrlAction $callPythonUrlAction)
     {
@@ -19,7 +20,6 @@ class MeetingsByAgentReportAction
                 'slug' => $request->input('slug'),
                 'type' => $request->input('type'),
                 'subdomain_id' => $request->input('subdomain_id'),
-                'users_ids' => $request->input('users_ids') ?? null,
                 'start_date' => $request->input('start_date'),
                 'end_date' => $request->input('end_date'),
             ]
@@ -28,10 +28,10 @@ class MeetingsByAgentReportAction
         $path = $request->input('slug');
 
         try {
-            $meetings_by_agent = collect(json_decode($this->callPythonUrlAction->execute($path, $data), true));
+            $meetings = collect(json_decode($this->callPythonUrlAction->execute($path, $data), true));
 
             return response()->json([
-                "data" => $meetings_by_agent,
+                "data" => $meetings,
                 "message" => "Retrieved all reports successfully.",
                 "status" => 200
             ]);

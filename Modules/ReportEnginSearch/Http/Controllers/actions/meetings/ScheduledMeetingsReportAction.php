@@ -1,8 +1,9 @@
 <?php
 
-namespace Modules\ReportEnginSearch\Http\Controllers\actions;
+namespace Modules\ReportEnginSearch\Http\Controllers\actions\meetings;
 
 use Exception;
+use Modules\ReportEnginSearch\Http\Controllers\actions\CallPythonUrlAction;
 
 class ScheduledMeetingsReportAction
 {

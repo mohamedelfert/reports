@@ -3,14 +3,15 @@
 namespace Modules\ReportEnginSearch\Http\Controllers;
 
 use Illuminate\Routing\Controller;
-use Modules\ReportEnginSearch\Http\Controllers\actions\AgentsReportAction;
-use Modules\ReportEnginSearch\Http\Controllers\actions\MeetingsByAgentReportAction;
-use Modules\ReportEnginSearch\Http\Controllers\actions\MeetingsByTeamReportAction;
-use Modules\ReportEnginSearch\Http\Controllers\actions\MeetingsOverallReportAction;
-use Modules\ReportEnginSearch\Http\Controllers\actions\MeetingsReportAction;
-use Modules\ReportEnginSearch\Http\Controllers\actions\OverAllActivitiesAction;
-use Modules\ReportEnginSearch\Http\Controllers\actions\PerformanceReportAction;
-use Modules\ReportEnginSearch\Http\Controllers\actions\ScheduledMeetingsReportAction;
+use Modules\ReportEnginSearch\Http\Controllers\actions\activities\AgentsReportAction;
+use Modules\ReportEnginSearch\Http\Controllers\actions\activities\OverAllActivitiesAction;
+use Modules\ReportEnginSearch\Http\Controllers\actions\activities\PerformanceReportAction;
+use Modules\ReportEnginSearch\Http\Controllers\actions\leads\LeadsOverallAction;
+use Modules\ReportEnginSearch\Http\Controllers\actions\meetings\MeetingsByAgentReportAction;
+use Modules\ReportEnginSearch\Http\Controllers\actions\meetings\MeetingsByTeamReportAction;
+use Modules\ReportEnginSearch\Http\Controllers\actions\meetings\MeetingsOverallReportAction;
+use Modules\ReportEnginSearch\Http\Controllers\actions\meetings\MeetingsReportAction;
+use Modules\ReportEnginSearch\Http\Controllers\actions\meetings\ScheduledMeetingsReportAction;
 use Modules\ReportEnginSearch\Http\Requests\ReportRequest;
 
 class ReportEnginSearchController extends Controller
@@ -23,7 +24,8 @@ class ReportEnginSearchController extends Controller
         MeetingsReportAction          $meetingsReportAction,
         ScheduledMeetingsReportAction $scheduledMeetingsReportAction,
         MeetingsByAgentReportAction $meetingsByAgentReportAction,
-        MeetingsByTeamReportAction $meetingsByTeamReportAction
+        MeetingsByTeamReportAction $meetingsByTeamReportAction,
+        LeadsOverallAction $leadsOverallReportAction
     )
     {
         $this->overAllActivitiesAction = $overAllActivitiesAction;
@@ -34,6 +36,7 @@ class ReportEnginSearchController extends Controller
         $this->scheduledMeetingsReportAction = $scheduledMeetingsReportAction;
         $this->meetingsByAgentReportAction = $meetingsByAgentReportAction;
         $this->meetingsByTeamReportAction = $meetingsByTeamReportAction;
+        $this->leadsOverallReportAction = $leadsOverallReportAction;
     }
 
 
@@ -95,6 +98,9 @@ class ReportEnginSearchController extends Controller
                 break;
             case('by-team-report'):
                 $response = $this->meetingsByTeamReportAction->execute($request);
+                break;
+            case('leads-overall'):
+                $response = $this->leadsOverallReportAction->execute($request);
                 break;
             default:
                 $response = null;
